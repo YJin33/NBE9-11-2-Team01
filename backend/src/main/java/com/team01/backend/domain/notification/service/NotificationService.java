@@ -11,10 +11,11 @@ import com.team01.backend.domain.user.entity.User;
 import com.team01.backend.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class NotificationService { // 알림을 실제로 보내는 역할, 다�
     private final SseEmitterRepository sseEmitterRepository;
     private final UserRepository userRepository;
     @Async
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleNotification(CommentCreatedEvent event) {
 
         // 1. 실제 DB 저장
@@ -50,7 +51,7 @@ public class NotificationService { // 알림을 실제로 보내는 역할, 다�
         }
     }
     @Async
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleNotification(ReplyCreatedEvent event) {
 
         // 1. 실제 DB 저장

@@ -31,9 +31,11 @@ spring:
   config:
     import:
         - classpath:application-secret.yaml  # optional 제거
-        - classpath:application-mail.yaml    # optional 제거
 
-
+  datasource:
+    hikari:
+      maximum-pool-size: 300 # 최대 커넥션 수를 10에서 30으로 확장
+      connection-timeout: 10000 # 대기 시간을 10초로 단축 (너무 오래 대기하지 않게)
 # Swagger UI 활성화
 springdoc:
   swagger-ui:
